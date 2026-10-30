@@ -1,0 +1,101 @@
+================================================================================
+                        VISION GUIDE AI - PROJECT SUMMARY
+================================================================================
+
+1. WHAT THE APP DOES
+--------------------------------------------------------------------------------
+Vision Guide AI is an offline-first visual perception and navigation assistant
+specifically designed to help visually impaired individuals navigate indoor and
+outdoor environments.
+
+Key Capabilities:
+- Real-time Object Detection: Identifies common household objects (such as chairs,
+  people, laptops, tables, beds, and couches) through the device camera.
+- Spatial Position Announcements: Announces detected objects and their relative
+  position (Left, Center, Right) without cluttering audio.
+- On-Demand Object Queries ("Where is <object>"): Users can ask for a specific
+  object at any time (e.g., "Where is chair"); the app finds the nearest instance
+  and responds with its position or states if it is not detected.
+- Interruption & Queue Management: When multiple objects are announced and the
+  user interrupts mid-speech with a query, the app immediately halts speech,
+  answers the query, and resumes the announcement queue.
+- Continuous Offline Voice Commands: Listens continuously in the background for
+  spoken commands (English, Urdu, Language switching, Repeat, and Location).
+- Location Services: Announces geographic coordinates or reverse-geocoded address
+  information upon request.
+- Dual-Language Support: Fully supports English (en-US) and Urdu (ur-PK).
+
+
+2. APPLIED ACCESSIBILITY SETTINGS
+--------------------------------------------------------------------------------
+- Global Hardware Shortcut: Implements a custom Android `AccessibilityService`
+  (`AccessibilityShortcutService`) that listens for the simultaneous pressing of
+  the **Volume Up + Volume Down** hardware buttons. When triggered from anywhere
+  on the device (even when the app is closed or killed), it instantly launches
+  the app.
+- First-Launch Prompt: Automatically prompts the user on startup/resume to enable
+  accessibility settings for quick-launch support, featuring "Enable" (redirects
+  to system accessibility settings) and "Not Now" (dismisses with a helper toast).
+
+
+3. TECH STACKS & FRAMEWORKS
+--------------------------------------------------------------------------------
+- Android / Kotlin: Core native application container (Min SDK 24, Target SDK 34).
+- WebView UI: Hybrid architecture combining native Android capabilities with an
+  HTML5/CSS3/JavaScript frontend UI.
+- TensorFlow.js: Runs client-side machine learning models inside the WebView.
+- COCO-SSD: Pretrained object detection model using Single Shot MultiBox Detector architecture.
+- Vosk Android SDK: Provides offline, on-device speech recognition.
+- eSpeak NG: Provides native text-to-speech synthesis bridged via Android JNI/Java.
+- Android Accessibility Service API: Global key event interception and app quick launch.
+- Gradle (AGP 8.3.2): Build system and dependency management.
+
+
+4. MODELS USED
+--------------------------------------------------------------------------------
+- Object Detection Model: TensorFlow.js COCO-SSD object detection model, bundled
+  locally via offline model weights (`model/model.json` and shards).
+- Speech Recognition Model: Vosk English offline speech recognition model
+  packaged in app assets (`model-en-us/`).
+- Text-to-Speech Engine: eSpeak NG synthesized voice engine packaged via the
+  Reece Dunn eSpeak library.
+
+
+5. PROJECT FILE STRUCTURE
+--------------------------------------------------------------------------------
+Vision Guide/
+└──app/
+    ├─ build.gradle                                            # App-level build configuration & dependencies
+    ├─ settings.gradle                                         # Project settings & repositories
+    ├─ gradle.properties                                       # Gradle & Kotlin compiler properties
+    └─ src/
+       └── main/
+           ├── AndroidManifest.xml                              # App manifest (Permissions & Accessibility service)
+           ├── java/
+           │   └── com/
+           │       └── tfest/
+           │           └── project/
+           │               ├── MainActivity.kt                  # Activity hosting WebView, permissions & prompt
+           │               ├── OfflineVoiceManager.kt           # Continuous background Vosk STT manager
+           │               └── AccessibilityShortcutService.kt  # Vol-Up + Vol-Down quick launch service
+           ├── res/
+           │   └── xml/
+           │       └── accessibility_service_config.xml         # Accessibility config for key filtering
+           └── assets/
+               ├── model/                                       # Local TensorFlow.js COCO-SSD model.json & shards
+               ├── model-en-us/                                 # Local Vosk offline speech recognition assets
+               └── www/
+                   ├── index.html                               # Main UI interface & camera viewfinder
+                   ├── script.js                                # AI loop, queues, interruptions, queries & STT
+                   └── style.css                                # theme UI styling
+
+
+6. BEST USE CASE
+--------------------------------------------------------------------------------
+The best use case for Vision Guide AI is assisting visually impaired users in
+unfamiliar or cluttered indoor environments (homes, offices, hallways) where
+reliable, real-time audio obstacle detection and instant hands-free accessibility
+launching are critical. Because all AI inference (computer vision, speech recognition,
+and text-to-speech) runs 100% locally on the device, the app requires zero internet
+connectivity, ensuring privacy, zero latency, and dependable functionality in remote
+or offline scenarios.

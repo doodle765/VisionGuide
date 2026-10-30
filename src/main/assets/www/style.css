@@ -1,0 +1,116 @@
+/* VisionGuide AI — single fixed blue theme (no theme switching) */
+:root{
+  --ink:#1a1a1a;
+  --cyan:#5dd0ff;
+  --frame:rgba(153,175,198,.7);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#203957}
+html,body{margin:0;min-height:100vh;min-height:100dvh}
+body {
+  font-family: Merriweather, Georgia, "Times New Roman", serif;
+  color: var(--ink);
+  background: #BFE8F7 no-repeat center top / cover;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Main column */
+.app{
+  width:100%;max-width:400px;margin:0 auto;
+  min-height:100vh;min-height:100dvh;
+   padding: max(50px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.section{width:100%}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+/* Header */
+.logo{width:94%;margin-top:4px}
+
+/* Pill sections: SVG artwork + HTML text layered on top */
+.pill{position:relative;container-type:inline-size}
+.pill-button{cursor:pointer;transition:transform .12s ease,filter .12s ease}
+.pill-button:active{transform:scale(.985);filter:brightness(1.12)}
+.pill-button:focus-visible,.mic-btn:focus-visible{outline:3px solid var(--cyan);outline-offset:3px;border-radius:999px}
+.pill-label{
+  position:absolute;left:16.1%;right:2.8%;top:11.9%;bottom:11.9%;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:0 4%;color:var(--ink);
+  font-size:clamp(14px,5.4cqw,22px);line-height:1.2;overflow:hidden;
+}
+.pill-label span{overflow-wrap:anywhere}
+.pill-label-start{justify-content:flex-start;right:44%;text-align:left;
+  top:0;bottom:0;left:16.6%;font-size:clamp(11px,3.6cqw,15px);padding:0}
+
+/* Listening wave (HTML so it can animate) */
+.wave{position:absolute;right:6%;top:50%;transform:translateY(-50%);
+  display:flex;align-items:center;gap:2px;height:52%}
+.wave i{display:block;width:2.6px;height:100%;border-radius:2px;background:#000;
+  transform:scaleY(var(--h,.3));transform-origin:center}
+#listening-bar.active .wave i{animation:wave var(--d,.7s) ease-in-out var(--dl,0s) infinite alternate}
+#listening-bar.active .pill-label-start{font-weight:700}
+@keyframes wave{0%{transform:scaleY(.12)}100%{transform:scaleY(var(--max,1))}}
+
+/* Camera */
+.camera-frame{
+  background:var(--frame);border-radius:11cqw;padding:3.2%;
+  container-type:inline-size;border-radius:44px;
+}
+.camera-inner{position:relative;aspect-ratio:4/3;border-radius:32px;overflow:hidden;background:#2c434d}
+.camera-inner video,.camera-inner canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.camera-placeholder{
+  position:absolute;inset:0;margin:0;display:grid;place-items:center;text-align:center;padding:16px;
+  color:#fff;font-family:Inter,Roboto,system-ui,"Segoe UI",Arial,sans-serif;font-size:clamp(20px,7vw,30px);
+}
+.camera-placeholder[hidden]{display:none}
+.camera-placeholder.error{font-size:16px}
+
+/* Eye + mic, overlapping the sections above and below */
+.eye-stage{position:relative;width:104%;margin:-26px -2% -30px;pointer-events:none}
+.eye-stage .svg-eye{width:100%}
+.svg-eye { opacity: 40%; }
+.mic-btn{
+  position:absolute;left:50%;top:50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);
+  padding:0;border:0;background:none;cursor:pointer;border-radius:50%;
+  pointer-events:auto;touch-action:none;transition:transform .12s ease,filter .12s ease;
+}
+.mic-btn svg{pointer-events:none}
+.mic-btn.holding{transform:translate(-50%,-50%) scale(.93);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{filter:drop-shadow(0 0 6px rgba(93,208,255,.6))}50%{filter:drop-shadow(0 0 22px rgba(93,208,255,1))}}
+
+/* Keep pills above the eye art where they overlap */
+.pill,.camera-frame{position:relative;z-index:1}
+
+[lang="ur"],.ur{font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq","Noto Naskh Arabic",Tahoma,serif;line-height:1.9}
+
+@media (prefers-reduced-motion:reduce){
+  #listening-bar.active .wave i,.mic-btn.holding{animation-duration:2s}
+}
+
+/* Enable smooth color transitions when toggling pressed state */
+#radial-gradient-1 stop,
+#radial-gradient-2 stop {
+  transition: stop-color 0.25s ease;
+}
+
+/* Invert Gradient 1 (Background disc) */
+.mic-btn[aria-pressed="true"] #radial-gradient-1 stop:nth-child(1) {
+  stop-color: #24a1fb; /* Swapped from #082db9 */
+}
+.mic-btn[aria-pressed="true"] #radial-gradient-1 stop:nth-child(2) {
+  stop-color: #082db9; /* Swapped from #24a1fb */
+}
+
+/* Invert Gradient 2 (Microphone icon) */
+.mic-btn[aria-pressed="true"] #radial-gradient-2 stop:nth-child(1) {
+  stop-color: #d5fcff; /* Swapped from #2298f6 */
+}
+.mic-btn[aria-pressed="true"] #radial-gradient-2 stop:nth-child(2) {
+  stop-color: #7bcafa; /* Midpoint tint */
+}
+.mic-btn[aria-pressed="true"] #radial-gradient-2 stop:nth-child(3) {
+  stop-color: #2298f6; /* Swapped from #d5fcff */
+}
